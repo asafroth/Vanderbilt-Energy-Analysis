@@ -3,7 +3,6 @@ library(lubridate)
 library(janitor)
 library(here)
 library(tidyr)
-library(dplyr)
 
 data_dir <- here::here("Energy Consumption Buildings Excel")
 
@@ -14,14 +13,17 @@ data_dir <- here::here("Energy Consumption Buildings Excel")
 process_building <- function(fname, bldg_name) {
   data_asaf <- read_csv(file.path(data_dir, fname)) %>%
     clean_names() %>% rename(kwh = 2) %>%
-    mutate(building_name = bldg_name
+    mutate(building_name = bldg_name)
   
   
-  
+}
   
   # Asaf's Questions
   # looking at the date I noticed that the firt column is the date and the time and I want to separate those 
   # I want to separet the first column onto date and time
+
+
+  #I want to Rename the Column and then separate the column into date and time
   
   
   

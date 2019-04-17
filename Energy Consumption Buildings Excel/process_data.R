@@ -31,3 +31,4 @@ p <- ggplot(summary_data, aes(x = hour, y = mean_electricity, color = ordered(we
   scale_color_brewer(palette = "Dark2")
 
 plot(p)
+
