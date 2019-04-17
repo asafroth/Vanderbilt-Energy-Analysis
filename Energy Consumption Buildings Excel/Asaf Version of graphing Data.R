@@ -2,15 +2,30 @@ library(tidyverse)
 library(lubridate)
 library(janitor)
 library(here)
+library(tidyr)
+library(dplyr)
 
 data_dir <- here::here("Energy Consumption Buildings Excel")
 
 
+# what doies kwh = 2 do?
+# what does the first mutate do mutate(building_name = bldg_name)
+
 process_building <- function(fname, bldg_name) {
   data_asaf <- read_csv(file.path(data_dir, fname)) %>%
     clean_names() %>% rename(kwh = 2) %>%
-    mutate(building_name = bldg_name)
-  #
+    mutate(building_name = bldg_name
+  
+  
+  
+  
+  # Asaf's Questions
+  # looking at the date I noticed that the firt column is the date and the time and I want to separate those 
+  # I want to separet the first column onto date and time
+  
+  
+  
+  
   # Use mutate to add a colmn with the month and the day of the week and the hour of the day
   # (lubridate has functions to get these thihgs from the date_time column)
   # 
