@@ -13,9 +13,9 @@ data_dir <- here::here("Energy Consumption Buildings Excel")
 process_building <- function(fname, bldg_name) {
   data_asaf <- read_csv(file.path(data_dir, fname)) %>%
     clean_names() %>% rename(kwh = 2) %>%
-    mutate(building_name = bldg_name)
-  
-  
+    transmute(kwh, building_name = bldg_name, date = date(date_time), 
+              hour = hour(date_time))
+  invisible(data_asaf)
 }
   
   # Asaf's Questions
@@ -48,11 +48,6 @@ process_building <- function(fname, bldg_name) {
   #
   # Make sure that you don't lose the "building_name" column
   
-  
-
-  invisible(data_asaf)
-}
-
 
 # Chapter 12 exercises 
 
