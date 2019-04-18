@@ -18,6 +18,29 @@ process_building <- function(fname, bldg_name) {
   invisible(data_asaf)
 }
   
+no_building_name <- function(df){
+df<-select(df, kwh, date, hour)
+  invisible(df)
+}
+
+
+group_month_and_day <-function(df){
+  data_asaf <- df %>% mutate(mon = month(date), dow = wday(date))
+  avg_data <- data_asaf %>% group_by(building_name, mon, dow, hour) %>% 
+                      summarize(avg_kwh = mean(kwh, na.rm = TRUE )) %>% ungroup()
+  invisible(avg_data)
+}
+
+
+# write a function that groups by month and day of month.
+# create new columns, day of the week and month
+# use libridate function to get the month
+#same way we did the hour
+# and day of the week (wday)
+# month is (month)
+
+
+
   # Asaf's Questions
   # looking at the date I noticed that the firt column is the date and the time and I want to separate those 
   # I want to separet the first column onto date and time
