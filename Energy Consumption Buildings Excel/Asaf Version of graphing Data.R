@@ -3,6 +3,7 @@ library(lubridate)
 library(janitor)
 library(here)
 library(tidyr)
+library(forcats)
 
 data_dir <- here::here("Energy Consumption Buildings Excel")
 
@@ -29,6 +30,30 @@ group_month_and_day <-function(df){
   avg_data <- data_asaf %>% group_by(building_name, mon, dow, hour) %>% 
                       summarize(avg_kwh = mean(kwh, na.rm = TRUE )) %>% ungroup()
   invisible(avg_data)
+}
+
+
+#
+# Modify this to group weekends, and two groups of weekdays: MWF and TR
+# So there will be three groups for dow: SS, MWF, and TR
+#
+group_month_and_day_2 <-function(df){
+  
+  data_asaf <- df %>% mutate(mon = month(date) %>% ordered(levels = 1:12, labels = month.abb), 
+                             dow = wday(date), 
+                             dow2 =  factor(dow) %>% 
+                               fct_collapse(SS = c("1","7"),
+                                            MWF = c("2","4","6"),
+                                            TR = c("3","5")))
+  avg_data <- data_asaf %>% group_by(building_name, mon, dow2, hour) %>% 
+    summarize(avg_kwh = mean(kwh, na.rm = TRUE )) %>% ungroup()
+  invisible(avg_data)
+}
+
+gg_data <-function(df){
+avg_data_2 <- group_month_and_day_2(df)
+ggplot(avg_data_2, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + facet_wrap(~mon)
+  
 }
 
 
@@ -74,23 +99,23 @@ group_month_and_day <-function(df){
 
 # Chapter 12 exercises 
 
-df <- data_frame()
+# df1 <- data_frame()
+# 
+# for(f in head(list.files(data_dir, pattern = "\\.csv$"), 3)) {
+#   # From the stringr package
+#   # Use a string command str_replace_all or something like that
+#   # to get the part of the file name before the period.
+#   # bldg_name <- ...
+#   bldg_name <- f
+#   df1 <- df1 %>% bind_rows(
+#     process_building(f, bldg_name)
+#   )
+# }
+# 
+# df2 <- df1 %>% spread(key = building_name, value = kwh)
+# df3 <- df2 %>% gather(key = building_name, value = kwh, -date) #date is minus because we do not want to gather it
+# 
+# 
+# 
+# print(data_asaf)
 
-for(f in head(list.files(data_dir, pattern = "\\.csv$"), 3)) {
-  # From the stringr package
-  # Use a string command str_replace_all or something like that
-  # to get the part of the file name before the period.
-  # bldg_name <- ...
-  bldg_name <- f
-  df <- df %>% bind_rows(
-    process_building(f, bldg_name)
-  )
-}
-
-df2 <- df %>% spread(key = building_name, value = kwh)
-df3 <- df2 %>% gather(key = building_name, value = kwh, -date_time) #date is minus because we do not want to gather it
-
-
-
-print(data_asaf)
-      
