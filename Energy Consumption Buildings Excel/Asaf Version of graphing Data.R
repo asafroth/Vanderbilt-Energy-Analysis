@@ -11,6 +11,8 @@ data_dir <- here::here("Energy Consumption Buildings Excel")
 # what doies kwh = 2 do?
 # what does the first mutate do mutate(building_name = bldg_name)
 
+
+
 process_building <- function(fname, bldg_name) {
   data_asaf <- read_csv(file.path(data_dir, fname)) %>%
     clean_names() %>% rename(kwh = 2) %>%
@@ -55,6 +57,40 @@ avg_data_2 <- group_month_and_day_2(df)
 ggplot(avg_data_2, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + facet_wrap(~mon)
   
 }
+
+# broke down every step
+
+
+
+
+# how does facet wrap work?
+# it must divide the different panels by the months
+# why is the tilda in front of day
+# factors are subset of the variable. days of the week is a factor in this. since the x is hours and y is kwh
+#ex gender or day of the week
+
+# why cant i call facet in the aes
+
+
+asaf_gg_plot <-function(data){
+  ggplot(data, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + facet_wrap(~mon) + theme_dark() + 
+    labs(title = "ASAF's Plot") +  labs(x = "hour", y = "average KWH")
+}
+
+
+## working with
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # write a function that groups by month and day of month.
