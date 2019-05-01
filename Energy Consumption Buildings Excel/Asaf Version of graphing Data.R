@@ -53,7 +53,7 @@ group_month_and_day_2 <-function(df){
 }
 
 gg_data <-function(df){
-avg_data_2 <- group_month_and_day_2(df)
+avg_data_2 <- group_month_and_day_2(df) # calls function group_month_and_day_2 in the function
 ggplot(avg_data_2, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + facet_wrap(~mon)
   
 }
@@ -73,21 +73,26 @@ ggplot(avg_data_2, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + fac
 
 
 asaf_gg_plot <-function(data){
-  ggplot(data, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + facet_wrap(~mon) + theme_dark() + 
+  ggplot(data, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + facet_wrap(~mon) + theme_bw() + 
     labs(title = "ASAF's Plot") +  labs(x = "hour", y = "average KWH")
 }
 
 
-## working with
 
 
 
+##
 
 
+## combing multiple different data sets together on to one ggplot using facet wrap
+## facet grid, building on the y axis, x is the month  facet_grid(building ~ mon)
 
-
-
-
+#combining data sets
+  # for loop on process building and then use bind
+buildings <- c("Buttrick Hall" = "buttrick.csv",
+                 "Branscomb Market" = "brandscomb_market_place.csv",
+               "Bronson Art Studio" = "BronsonArtStudio.csv",
+               "Calhoun Hall" = "calhound.csv")
 
 
 
@@ -155,3 +160,62 @@ asaf_gg_plot <-function(data){
 # 
 # print(data_asaf)
 
+# for loop on process building and then use bind
+buildings <- c("Buttrick Hall" = "buttrick.csv",
+               "Branscomb Market" = "brandscomb_market_place.csv",
+               "Bronson Art Studio" = "BronsonArtStudio.csv",
+               "Calhoun Hall" = "calhoun.csv")
+
+data <- tibble()
+
+for (bldg in names(buildings)) {
+  df <- process_building(buildings[bldg], bldg)
+  data <- bind_rows(data, df)
+}
+
+# This is how you would do this in C++
+#
+# for(i = 0, i < length(buildings), i++) {
+#   const char * bldg = names(buildings)[i];
+#   ...
+# }
+
+# The R way of writing a C++ loop
+#
+# for (i in seq(length(buildings))) {
+#   bldg <- names(buildings)[i]
+#   df <- process_building(buildings[bldg], bldg)
+#   data <- bind_rows(data, df)
+# }
+
+# Now do it with purrr, INSTEAD of the for loop
+#
+# For really cool examples and tutorial of this kind of thing,
+# Google Professor Jenny Bryan's lectures on "Data Rectangling"
+#
+
+#
+# map creates a list:
+# map2(a, b, ~f(.x, .y)) creates a list of f(a[1], b[1]), f(a[2],b[2]), ...
+# 
+# If f returns data frames, then the output of map2(a, b, ~f(.x, .y))
+# will be a list of data frames. If we want to bind their rows together
+# to make one big data frame, we can pipe the output of map2() to bind_rows():
+#
+# map2(a, b, ~f(.x, .y)) %>% bind_rows() will return one big data frame.
+#
+# map2_df(a, b, ~f(.x, .y)) tells map that the output of the function f
+# will be a data frame, so it should bind all of the data frames together
+# so
+# map2_df(a, b, ~f(.x, .y))
+# is exactly the same as
+# map2(a, b, ~f(.x, .y)) %>% bind_rows()
+#
+# Each line in the stuff below does exactly the same thing.
+# They are all different ways to creqte the same data frame "data"
+#
+data <- map2_df(names(buildings), buildings, ~process_building(.y, .x))
+data <- map2_df(buildings, names(buildings), ~process_building(.x, .y))
+
+data <- map2(buildings, names(buildings), ~process_building(.x, .y)) %>%
+  bind_rows()
