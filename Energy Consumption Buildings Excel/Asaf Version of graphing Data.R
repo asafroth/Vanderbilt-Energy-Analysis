@@ -13,6 +13,9 @@ data_dir <- here::here("Energy Consumption Buildings Excel")
 
 
 
+# example of how to use process data
+# process_building("buttrick.csv", "buttrick")
+
 process_building <- function(fname, bldg_name) {
   data_asaf <- read_csv(file.path(data_dir, fname)) %>%
     clean_names() %>% rename(kwh = 2) %>%
@@ -20,6 +23,8 @@ process_building <- function(fname, bldg_name) {
               hour = hour(date_time))
   invisible(data_asaf)
 }
+
+
   
 no_building_name <- function(df){
 df<-select(df, kwh, date, hour)
@@ -219,3 +224,4 @@ data <- map2_df(buildings, names(buildings), ~process_building(.x, .y))
 
 data <- map2(buildings, names(buildings), ~process_building(.x, .y)) %>%
   bind_rows()
+
