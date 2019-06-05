@@ -21,6 +21,7 @@ process_building <- function(fname, bldg_name) {
     clean_names() %>% rename(kwh = 2) %>%
     transmute(kwh, building_name = bldg_name, date = date(date_time), 
               hour = hour(date_time))
+  buildingName <- bldg_name
   invisible(data_asaf)
 }
 
@@ -30,6 +31,13 @@ no_building_name <- function(df){
 df<-select(df, kwh, date, hour)
   invisible(df)
 }
+
+
+building_name <- function(df){
+  df <- select(building_name)
+  invisible(df)
+}
+
 
 
 group_month_and_day <-function(df){
@@ -60,7 +68,7 @@ group_month_and_day_2 <-function(df){
 gg_data <-function(df){
 avg_data_2 <- group_month_and_day_2(df) # calls function group_month_and_day_2 in the function
 ggplot(avg_data_2, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + facet_wrap(~mon)
-  
+
 }
 
 # broke down every step
@@ -79,7 +87,7 @@ ggplot(avg_data_2, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + fac
 
 asaf_gg_plot <-function(data){
   ggplot(data, aes(x = hour, y = avg_kwh, color = dow2)) + geom_line() + facet_wrap(~mon) + theme_bw() + 
-    labs(title = "ASAF's Plot") +  labs(x = "hour", y = "average KWH")
+    labs(title = building_name) +  labs(x = "hour", y = "average KWH")
 }
 
 
